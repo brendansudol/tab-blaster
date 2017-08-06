@@ -1,7 +1,7 @@
 {
   "name": "Tab Blaster",
   "description": "You get 10 tabs to use, a nice and fair round number. After that, your oldest one gets blasted away.",
-  "version": "0.0.1",
+  "version": "0.0.2",
 
   "icons": {
     "16": "img/icon16.png",
@@ -19,7 +19,6 @@
   },
 
   "background": {
-    "persistent": false,
     "scripts": ["background.js"]
   },
 

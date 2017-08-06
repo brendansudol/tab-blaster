@@ -2,8 +2,6 @@ const LIMIT = 10
 let tabsAll = []
 
 const getInitialState = () => {
-  const now = Date.now()
-
   chrome.tabs.query({}, tabs => {
     tabsAll = tabs
       .filter(tab => tab.id !== chrome.tabs.TAB_ID_NONE)
@@ -13,6 +11,11 @@ const getInitialState = () => {
       })
 
     updateBadge()
+
+    if (tabsAll.length > LIMIT) {
+      const tabsDelete = tabsAll.slice(0, tabsAll.length - LIMIT).map(t => t.id)
+      chrome.tabs.remove(tabsDelete)
+    }
   })
 }
 
@@ -27,7 +30,7 @@ const onTabCreate = tab => {
   })
 
   if (tabsAll.length <= LIMIT) updateBadge()
-  else chrome.tabs.remove(tabsAll[0].id, () => {})
+  else chrome.tabs.remove(tabsAll[0].id)
 }
 
 const onTabRemove = tabId => {
@@ -35,11 +38,6 @@ const onTabRemove = tabId => {
   updateBadge()
 }
 
-function init() {
-  getInitialState()
-
-  chrome.tabs.onCreated.addListener(onTabCreate)
-  chrome.tabs.onRemoved.addListener(onTabRemove)
-}
-
-chrome.runtime.onInstalled.addListener(init)
+chrome.runtime.onInstalled.addListener(getInitialState)
+chrome.tabs.onCreated.addListener(onTabCreate)
+chrome.tabs.onRemoved.addListener(onTabRemove)
